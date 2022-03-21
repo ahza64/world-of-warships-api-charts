@@ -1,0 +1,19 @@
+.compare-graph-control-btn-grp {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.compare-graph-control-btn-grp select {
+  border-radius: 6px;
+  font-size: 20px;
+  padding: 12px;
+}
+
+.compare-graph-nation-btn select {
+  background-color: lightgreen;
+}
+
+.compare-graph-class-btn select {
+  background-color: khaki;
+}

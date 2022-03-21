@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Form } from "react-bootstrap"
 import { Bar } from "react-chartjs-2"
 import {
   Chart as ChartJS,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import "./CompareGraph.css"
 
 ChartJS.register(
   CategoryScale,
@@ -20,16 +22,16 @@ ChartJS.register(
 );
 
 
-
 export default function CompareGraph() {
-
-
   const [data, setData] = useState([])
+  const [nation, setNation] = useState("japan")
+  const [shipClass, setShipClass] = useState("Destroyer")
+
   const labels = []
   const dataSet = []
 
   useEffect(() => {
-    const baseUrl = "https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=Destroyer&nation=japan&fields=name%2C+default_profile.armour.health"
+    const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${shipClass}&nation=${nation}&fields=name%2C+default_profile.armour.health`
     fetch(baseUrl, {method: "GET"})
       .then(res => {
         if (res.ok) {
@@ -47,18 +49,21 @@ export default function CompareGraph() {
       .finally(() => {
         // setLoading(false)
       })
-  }, [])
+  }, [nation, shipClass])
 
   data.map((item, idx) => {
     labels.push(item.name)
     dataSet.push(item.default_profile.armour.health)
-    console.log("data map", dataSet);
   })
-  const fetchData = () => {
 
+  const updateNation = (e) => {
+    console.log("e", e.target.value);
+    setNation(e.target.value)
   }
 
-  console.log("data state", data);
+  const updateShipClass = (e) => {
+    setShipClass(e.target.value)
+  }
 
   return (
     <div>
@@ -86,10 +91,25 @@ export default function CompareGraph() {
           ],
         }}
       />
-      <div>
-        <button onClick={fetchData}>
-          fetch data
-        </button>
+      <div className="compare-graph-control-btn-grp">
+        <div className="compare-graph-nation-btn">
+          <Form.Select aria-label="Default select example" onChange={updateNation} >
+            <option value="japan">Japanese</option>
+            <option value="usa">USA</option>
+            <option value="ussr">Russians</option>
+            <option value="germany">Germans</option>
+            <option value="uk">British</option>
+            <option value="france">French</option>
+            <option value="italy">Italian</option>
+          </Form.Select>
+        </div>
+        <div className="compare-graph-class-btn">
+          <Form.Select onChange={updateShipClass} >
+            <option value="Destroyer">Destroyers</option>
+            <option value="Cruiser">Cruisers</option>
+            <option value="Battleship">Battleships</option>
+          </Form.Select>
+        </div>
       </div>
     </div>
   )
