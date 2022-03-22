@@ -69,7 +69,7 @@ export default function CompareGraph() {
     <div>
       <Bar
         options={{
-          responsive: true,
+          responsive: false,
           plugins: {
             legend: {
               position: 'top',
@@ -89,7 +89,7 @@ export default function CompareGraph() {
               ticks: {
                 color: "white",
                 font: {
-                  size: 24
+                  size: 14
                 }
               }
             },
