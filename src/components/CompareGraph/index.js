@@ -66,8 +66,10 @@ export default function CompareGraph() {
   }
 
   return (
-    <div>
+    <div className="bar-chart">
       <Bar
+        height="500px"
+        width="1000em"
         options={{
           responsive: false,
           plugins: {

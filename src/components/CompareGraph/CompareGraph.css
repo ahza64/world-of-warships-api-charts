@@ -17,3 +17,9 @@
 .compare-graph-class-btn select {
   background-color: khaki;
 }
+
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
