@@ -26,12 +26,17 @@ export default function CompareGraph() {
   const [data, setData] = useState([])
   const [nation, setNation] = useState("japan")
   const [shipClass, setShipClass] = useState("Destroyer")
+  const [parameter, setParameter] = useState("hit-points")
 
   const labels = []
   const dataSet = []
+  const parametersMap = {
+    'hit-points': "%2C+default_profile.armour.health",
+    'main-battery-range': "%2C+default_profile.artillery.distance"
+  }
 
   useEffect(() => {
-    const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${shipClass}&nation=${nation}&fields=name%2C+default_profile.armour.health`
+    const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${shipClass}&nation=${nation}&fields=name${parametersMap[parameter]}`
     fetch(baseUrl, {method: "GET"})
       .then(res => {
         if (res.ok) {
@@ -49,11 +54,16 @@ export default function CompareGraph() {
       .finally(() => {
         // setLoading(false)
       })
-  }, [nation, shipClass])
+  }, [nation, shipClass, parameter])
+
 
   data.map((item, idx) => {
     labels.push(item.name)
-    dataSet.push(item.default_profile.armour.health)
+    if (parameter === "hit-points") {
+      dataSet.push(item.default_profile.armour.health)
+    } else {
+      dataSet.push(item.default_profile.artillery.distance)
+    }
   })
 
   const updateNation = (e) => {
@@ -63,6 +73,10 @@ export default function CompareGraph() {
 
   const updateShipClass = (e) => {
     setShipClass(e.target.value)
+  }
+
+  const updateParameter = (e) => {
+    setParameter(e.target.value)
   }
 
   return (
@@ -106,7 +120,7 @@ export default function CompareGraph() {
           labels: labels,
           datasets: [
             {
-              label: 'Dataset 1',
+              label: parameter,
               data: dataSet,
               backgroundColor: "gold",
             }
@@ -132,6 +146,7 @@ export default function CompareGraph() {
             <option value="Battleship">Battleships</option>
           </Form.Select>
         </div>
+      
       </div>
     </div>
   )

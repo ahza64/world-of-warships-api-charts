@@ -18,6 +18,10 @@
   background-color: khaki;
 }
 
+.compare-graph-parameter-btn select {
+  background-color: red;
+}
+
 .bar-chart {
   display: flex;
   flex-direction: column;
