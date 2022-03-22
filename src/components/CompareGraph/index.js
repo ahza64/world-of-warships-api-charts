@@ -73,12 +73,32 @@ export default function CompareGraph() {
           plugins: {
             legend: {
               position: 'top',
+              display: true,
+              labels: {
+                color: "white"
+              }
             },
             title: {
               display: true,
-              text: 'Chart.js Bar Chart',
+              text: 'Compare Chart',
+              color: "white"
             },
           },
+          scales: {
+            x: {
+              ticks: {
+                color: "white",
+                font: {
+                  size: 24
+                }
+              }
+            },
+            y: {
+              ticks: {
+                color: "white",
+              }
+            }
+          }
         }}
         data={{
           labels: labels,
@@ -86,7 +106,7 @@ export default function CompareGraph() {
             {
               label: 'Dataset 1',
               data: dataSet,
-              backgroundColor: "yellow",
+              backgroundColor: "gold",
             }
           ],
         }}

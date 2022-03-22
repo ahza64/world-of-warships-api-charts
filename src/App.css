@@ -1,5 +1,5 @@
 #background {
-  background-image: url(../public/cherry-wallpaper.jpeg);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.44), rgba(0, 0, 0, 0.4)), url(../public/cherry-wallpaper.jpeg);
   background-size: cover;
   background-repeat: no-repeat;
   text-align: center;
