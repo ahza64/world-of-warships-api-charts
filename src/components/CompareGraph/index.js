@@ -21,63 +21,112 @@ ChartJS.register(
   Legend
 );
 
+// const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${shipClass}&nation=${nation}&fields=name${parametersMap[parameter]}`
+const initialState = {
+  shipData: [],
+  shipNation: "japan",
+  shipClass: "Destroyer",
+  shipParameter: "hit-points",
+  labels: null,
+  dataSet: null
+}
 
 export default function CompareGraph() {
-  const [data, setData] = useState([])
-  const [nation, setNation] = useState("japan")
-  const [shipClass, setShipClass] = useState("Destroyer")
-  const [parameter, setParameter] = useState("hit-points")
-
-  const labels = []
-  const dataSet = []
-  const parametersMap = {
-    'hit-points': "%2C+default_profile.armour.health",
-    'main-battery-range': "%2C+default_profile.artillery.distance"
-  }
+  const [state, setState] = useState({ ...initialState  })
 
   useEffect(() => {
-    const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${shipClass}&nation=${nation}&fields=name${parametersMap[parameter]}`
-    fetch(baseUrl, {method: "GET"})
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        throw res
-      })
-      .then((data) => {
-        setData(Object.values(data.data))
-      })
-      .catch((err) => {
-        // setHasNoResults(true)
-        // setError(err)
-      })
-      .finally(() => {
-        // setLoading(false)
-      })
-  }, [nation, shipClass, parameter])
-
-
-  data.map((item, idx) => {
-    labels.push(item.name)
-    if (parameter === "hit-points") {
-      dataSet.push(item.default_profile.armour.health)
-    } else {
-      dataSet.push(item.default_profile.artillery.distance)
+    const parametersMap = {
+      'hit-points': "%2C+default_profile.armour.health",
+      'main-battery-range': "%2C+default_profile.artillery.distance"
     }
-  })
+    console.log("refetch data");
+    const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${state.shipClass}&nation=${state.shipNation}&fields=name${parametersMap[state.shipParameter]}`
+    fetch(baseUrl, {method: "GET"})
+    .then(res => {
+      if (res.ok) {
+        return res.json()
+      }
+      throw res
+    })
+    .then(({data}) => {
+
+      setState((prevState) => ({
+        ...prevState,
+        shipData: Object.values(data)
+      }))
+    })
+    .catch((err) => {
+      // setHasNoResults(true)
+      // setError(err)
+    })
+    .finally(() => {
+      // setLoading(false)
+    })
+    console.log("fetch data", state.shipData);
+  }, [state.shipNation, state.shipClass, state.shipParameter])
+
+  useEffect(() => {
+    const newLabels = []
+    const newData = []
+    state.shipData.map((item, idx) => {
+      if (state.shipParameter === "hit-points") {
+        newData.push(item.default_profile.armour.health)
+      } else if (state.shipParameter === "main-battery-range") {
+        newData.push(item.default_profile.artillery.distance)
+      }
+      newLabels.push(item.name)
+    })
+    setState((prevState) => ({
+      ...prevState,
+      labels: newLabels,
+      dataSet: newData
+    }))
+  }, [state.shipData])
 
   const updateNation = (e) => {
-    console.log("e", e.target.value);
-    setNation(e.target.value)
+    console.log("e nation", e.target.value);
+    setState((prevState) => ({
+      ...prevState,
+      shipNation: e.target.value
+    }))
   }
 
   const updateShipClass = (e) => {
-    setShipClass(e.target.value)
+    console.log("e class", e.target.value);
+    setState((prevState) => ({
+      ...prevState,
+      shipClass: e.target.value
+    }))
   }
 
   const updateParameter = (e) => {
-    setParameter(e.target.value)
+    console.log("e pram", e.target.value);
+    setState((prevState) => ({
+      ...prevState,
+      shipParameter: e.target.value
+    }))
   }
+
+  const nationOptions = [
+    { id: "001", option: "japan", title: "Japanese" },
+    { id: "002", option: "usa", title: "American" },
+    { id: "003", option: "ussr", title: "Russians" },
+    { id: "004", option: "germany", title: "Germans" },
+    { id: "005", option: "uk", title: "British" },
+    { id: "006", option: "france", title: "French" },
+    { id: "007", option: "italy", title: "Italian" },
+  ]
+
+  const shipClassOptions = [
+    { id: "001", option: "Destroyer", title: "Destroyers" },
+    { id: "002", option: "Cruiser", title: "Cruisers" },
+    { id: "003", option: "Battleship", title: "Battleships" },
+  ]
+
+  const shipParameterOptions = [
+    { id: "001", option: "hit-points", title: "Hit Points" },
+    { id: "002", option: "main-battery-range", title: "Main Firing Range" },
+  ]
 
   return (
     <div className="bar-chart">
@@ -96,7 +145,7 @@ export default function CompareGraph() {
             },
             title: {
               display: true,
-              text: 'Compare Chart',
+              text: 'Compare Chart (live API data from wargaming.com)',
               color: "white"
             },
           },
@@ -117,11 +166,11 @@ export default function CompareGraph() {
           }
         }}
         data={{
-          labels: labels,
+          labels: state.labels,
           datasets: [
             {
-              label: parameter,
-              data: dataSet,
+              label: state.parameter,
+              data: state.dataSet,
               backgroundColor: "gold",
             }
           ],
@@ -129,24 +178,27 @@ export default function CompareGraph() {
       />
       <div className="compare-graph-control-btn-grp">
         <div className="compare-graph-nation-btn">
-          <Form.Select aria-label="Default select example" onChange={updateNation} >
-            <option value="japan">Japanese</option>
-            <option value="usa">USA</option>
-            <option value="ussr">Russians</option>
-            <option value="germany">Germans</option>
-            <option value="uk">British</option>
-            <option value="france">French</option>
-            <option value="italy">Italian</option>
+          <Form.Select aria-label="Default select example" onChange={updateNation}>
+            {nationOptions.map((item) => (
+              <option key={item.id} value={item.option}>{item.title}</option>
+            ))}
           </Form.Select>
         </div>
         <div className="compare-graph-class-btn">
-          <Form.Select onChange={updateShipClass} >
-            <option value="Destroyer">Destroyers</option>
-            <option value="Cruiser">Cruisers</option>
-            <option value="Battleship">Battleships</option>
+          <Form.Select onChange={updateShipClass}>
+            {shipClassOptions.map((item) => (
+              <option key={item.id} value={item.option}>{item.title}</option>
+            ))}
           </Form.Select>
         </div>
-      
+        <div className="compare-graph-parameter-btn">
+          <Form.Select onChange={updateParameter}>
+            {shipParameterOptions.map((item) => (
+              <option key={item.id} value={item.option}>{item.title}</option>
+            ))}
+          </Form.Select>
+        </div>
+
       </div>
     </div>
   )
