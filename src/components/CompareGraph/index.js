@@ -178,6 +178,9 @@ export default function CompareGraph() {
       />
       <div className="compare-graph-control-btn-grp">
         <div className="compare-graph-nation-btn">
+          <div style={{color: "white"}}>
+            Select Ship Nation
+          </div>
           <Form.Select aria-label="Default select example" onChange={updateNation}>
             {nationOptions.map((item) => (
               <option key={item.id} value={item.option}>{item.title}</option>
@@ -185,6 +188,9 @@ export default function CompareGraph() {
           </Form.Select>
         </div>
         <div className="compare-graph-class-btn">
+          <div style={{color: "white"}}>
+            Select Ship Class
+          </div>
           <Form.Select onChange={updateShipClass}>
             {shipClassOptions.map((item) => (
               <option key={item.id} value={item.option}>{item.title}</option>
@@ -192,6 +198,9 @@ export default function CompareGraph() {
           </Form.Select>
         </div>
         <div className="compare-graph-parameter-btn">
+          <div style={{color: "white"}}>
+            Select Parameter 1
+          </div>
           <Form.Select onChange={updateParameter}>
             {shipParameterOptions.map((item) => (
               <option key={item.id} value={item.option}>{item.title}</option>
