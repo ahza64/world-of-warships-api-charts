@@ -37,7 +37,8 @@ export default function CompareGraph() {
   useEffect(() => {
     const parametersMap = {
       'hit-points': "%2C+default_profile.armour.health",
-      'main-battery-range': "%2C+default_profile.artillery.distance"
+      'main-battery-range': "%2C+default_profile.artillery.distance",
+      'concealment': "%2C+default_profile.concealment.detect_distance_by_ship"
     }
     console.log("refetch data");
     const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${state.shipClass}&nation=${state.shipNation}&fields=name${parametersMap[state.shipParameter]}`
@@ -68,11 +69,18 @@ export default function CompareGraph() {
   useEffect(() => {
     const newLabels = []
     const newData = []
+    // const shipParameterMap = [
+    //   {hitPoints: "default_profile.armour.health"},
+    //   {mainBatteryRange: "default_profile.artillery.distance"}
+    // ]
+    // build global parameter state form the button? ex. add urlParams: "default_profile.armour.health" to line 133
     state.shipData.map((item, idx) => {
       if (state.shipParameter === "hit-points") {
         newData.push(item.default_profile.armour.health)
       } else if (state.shipParameter === "main-battery-range") {
         newData.push(item.default_profile.artillery.distance)
+      } else if (state.shipParameter === "concealment") {
+        newData.push(item.default_profile.concealment.detect_distance_by_ship)
       }
       newLabels.push(item.name)
     })
@@ -126,6 +134,7 @@ export default function CompareGraph() {
   const shipParameterOptions = [
     { id: "001", option: "hit-points", title: "Hit Points" },
     { id: "002", option: "main-battery-range", title: "Main Firing Range" },
+    { id: "003", option: "concealment", title: "Concealment" }
   ]
 
   return (
