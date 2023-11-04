@@ -233,12 +233,13 @@ export default function CompareGraph() {
             datasets: [
               {
                 label: 'des Moines',
-                backgroundColor: 'rgba(179,181,198,0.2)',
-                borderColor: 'rgba(179,181,198,1)',
-                pointBackgroundColor: 'rgba(179,181,198,1)',
+                backgroundColor: '#D8BFD8',
+                borderColor: '#D8BFD8',
+                pointBackgroundColor: '#D8BFD8',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(179,181,198,1)',
+                pointHoverBorderColor: '#D8BFD8',
+                fill: true,
                 data: [50.6, 13.9, 30, 8.6, 33, 77.0, 13.734]
               },
               {
@@ -249,6 +250,7 @@ export default function CompareGraph() {
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(255,99,132,1)',
+                fill: true,
                 data: [96.3, 17.8, 45, 22.2, 30, 95.0, 8.64]
               }
             ]
@@ -264,10 +266,6 @@ export default function CompareGraph() {
                   color: "#fff"
                 },
                 angleLines: {
-                  color: "#fff"
-                },
-                gridLines: {
-                  fontColor: "#fff",
                   color: "#fff"
                 }
               }
