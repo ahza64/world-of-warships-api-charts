@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Form } from "react-bootstrap"
-import { Bar } from "react-chartjs-2"
+import { Bar, Radar } from "react-chartjs-2"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,6 +9,9 @@ import {
   Title,
   Tooltip,
   Legend,
+  LineElement,
+  RadialLinearScale,
+  PointElement
 } from 'chart.js';
 import "./CompareGraph.css"
 
@@ -18,7 +21,10 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  LineElement,
+  RadialLinearScale,
+  PointElement
 );
 
 // const baseUrl = `https://api.worldofwarships.com/wows/encyclopedia/ships/?application_id=5dd2dcfbe6731a702bb74e3ccd2d7a4c&type=${shipClass}&nation=${nation}&fields=name${parametersMap[parameter]}`
@@ -138,85 +144,136 @@ export default function CompareGraph() {
   ]
 
   return (
-    <div className="bar-chart">
-      <Bar
-        height="500px"
-        width="1000em"
-        options={{
-          responsive: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              display: true,
-              labels: {
+    <div>
+      <div className="bar-chart">
+        <Bar
+          height="500px"
+          width="1000em"
+          options={{
+            responsive: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                display: true,
+                labels: {
+                  color: "white"
+                }
+              },
+              title: {
+                display: true,
+                text: 'Compare Chart (live API data from wargaming.com)',
                 color: "white"
-              }
+              },
             },
-            title: {
-              display: true,
-              text: 'Compare Chart (live API data from wargaming.com)',
-              color: "white"
-            },
-          },
-          scales: {
-            x: {
-              ticks: {
-                color: "white",
-                font: {
-                  size: 14
+            scales: {
+              x: {
+                ticks: {
+                  color: "white",
+                  font: {
+                    size: 14
+                  }
+                }
+              },
+              y: {
+                ticks: {
+                  color: "white",
                 }
               }
-            },
-            y: {
-              ticks: {
-                color: "white",
+            }
+          }}
+          data={{
+            labels: state.labels,
+            datasets: [
+              {
+                label: state.parameter,
+                data: state.dataSet,
+                backgroundColor: "gold",
+              }
+            ],
+          }}
+        />
+        <div className="compare-graph-control-btn-grp">
+          <div className="compare-graph-nation-btn">
+            <div style={{color: "white"}}>
+              Select Ship Nation
+            </div>
+            <Form.Select aria-label="Default select example" onChange={updateNation}>
+              {nationOptions.map((item) => (
+                <option key={item.id} value={item.option}>{item.title}</option>
+              ))}
+            </Form.Select>
+          </div>
+          <div className="compare-graph-class-btn">
+            <div style={{color: "white"}}>
+              Select Ship Class
+            </div>
+            <Form.Select onChange={updateShipClass}>
+              {shipClassOptions.map((item) => (
+                <option key={item.id} value={item.option}>{item.title}</option>
+              ))}
+            </Form.Select>
+          </div>
+          <div className="compare-graph-parameter-btn">
+            <div style={{color: "white"}}>
+              Select Parameter 1
+            </div>
+            <Form.Select onChange={updateParameter}>
+              {shipParameterOptions.map((item) => (
+                <option key={item.id} value={item.option}>{item.title}</option>
+              ))}
+            </Form.Select>
+          </div>
+
+        </div>
+      </div>
+      <div className="radar-chart">
+        <Radar 
+        data={{
+            labels: ['Hit Points/1000', 'Concealment', 'Turret Traverse', 'Rudder Shift', 'Full Speed', 'Turn Radius/10', 'Fires per Minute'],
+            datasets: [
+              {
+                label: 'des Moines',
+                backgroundColor: 'rgba(179,181,198,0.2)',
+                borderColor: 'rgba(179,181,198,1)',
+                pointBackgroundColor: 'rgba(179,181,198,1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(179,181,198,1)',
+                data: [50.6, 13.9, 30, 8.6, 33, 77.0, 13.734]
+              },
+              {
+                label: 'montana',
+                backgroundColor: 'rgba(255,99,132,0.2)',
+                borderColor: 'rgba(255,99,132,1)',
+                pointBackgroundColor: 'rgba(255,99,132,1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(255,99,132,1)',
+                data: [96.3, 17.8, 45, 22.2, 30, 95.0, 8.64]
+              }
+            ]
+        }}
+          options={{
+            scales: {
+              r: {
+                pointLabels: {
+                  color: "#fff",
+                  fontSize: "48px"
+                },
+                grid: {
+                  color: "#fff"
+                },
+                angleLines: {
+                  color: "#fff"
+                },
+                gridLines: {
+                  fontColor: "#fff",
+                  color: "#fff"
+                }
               }
             }
-          }
-        }}
-        data={{
-          labels: state.labels,
-          datasets: [
-            {
-              label: state.parameter,
-              data: state.dataSet,
-              backgroundColor: "gold",
-            }
-          ],
-        }}
-      />
-      <div className="compare-graph-control-btn-grp">
-        <div className="compare-graph-nation-btn">
-          <div style={{color: "white"}}>
-            Select Ship Nation
-          </div>
-          <Form.Select aria-label="Default select example" onChange={updateNation}>
-            {nationOptions.map((item) => (
-              <option key={item.id} value={item.option}>{item.title}</option>
-            ))}
-          </Form.Select>
-        </div>
-        <div className="compare-graph-class-btn">
-          <div style={{color: "white"}}>
-            Select Ship Class
-          </div>
-          <Form.Select onChange={updateShipClass}>
-            {shipClassOptions.map((item) => (
-              <option key={item.id} value={item.option}>{item.title}</option>
-            ))}
-          </Form.Select>
-        </div>
-        <div className="compare-graph-parameter-btn">
-          <div style={{color: "white"}}>
-            Select Parameter 1
-          </div>
-          <Form.Select onChange={updateParameter}>
-            {shipParameterOptions.map((item) => (
-              <option key={item.id} value={item.option}>{item.title}</option>
-            ))}
-          </Form.Select>
-        </div>
-
+          }}
+        />
       </div>
     </div>
   )

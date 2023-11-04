@@ -27,3 +27,8 @@
   flex-direction: column;
   align-items: center;
 }
+
+.radar-chart {
+  margin-top: 100px;
+  background-color: grey;
+}
